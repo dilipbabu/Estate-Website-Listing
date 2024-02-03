@@ -14,7 +14,7 @@ export default function Header() {
     <header className="bg-slate-200 shadow-orange-400">
       <div className="flex justify-between items-center max-w-6xl mx-auto p-3">
         <Link to="/">
-          <h1 className="font-bold sm: text-xl flex flex-wrap">
+          <h1 className="font-bold sm: text-xl flex flex-wrap transform hover:scale-90 transition-transform duration-700">
             <span className="text-red-600">Dilip's</span>
             <span className="text-yellow-800">‎ Estate Lisitings</span>
           </h1>
@@ -32,11 +32,15 @@ export default function Header() {
         )}
         <ul className="flex gap-4">
           <Link to="/">
-            <li className=" text-slate-950 hover:underline">HOME</li>
+            <li className=" text-slate-950 hover:underline transform hover:scale-90 transition-transform duration-500">
+              HOME
+            </li>
           </Link>
 
           <Link to="/about">
-            <li className=" text-slate-950 hover:underline">ABOUT</li>
+            <li className=" text-slate-950 hover:underline transform hover:scale-90 transition-transform duration-500">
+              ABOUT
+            </li>
           </Link>
           <Link to="/profile">
             {currentUser ? (
@@ -46,7 +50,10 @@ export default function Header() {
                 alt="Profile"
               />
             ) : (
-              <li className=" text-slate-950 hover:underline"> SIGN IN</li>
+              <li className=" text-slate-950 hover:underline transform hover:scale-90 transition-transform duration-500">
+                {" "}
+                SIGN IN
+              </li>
             )}
           </Link>
         </ul>

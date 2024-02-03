@@ -55,11 +55,12 @@ export default function Profile() {
           hidden
           accept="image/*"
         />
+
         <img
           onClick={() => fileRef.current.click()}
           src={formData.avatar || currentUser.avatar}
           alt="Profile-Pic"
-          className="rounded-full h-40 w-40 object-cover cursor-pointer self-center mt-6"
+          className="rounded-full h-40 w-40 object-cover cursor-pointer self-center mt-6 hover:opacity-90 transform hover:scale-90 transition-transform duration-700"
         />
         <p className="text-xl self-center">
           {fileUploadError ? (
@@ -80,31 +81,31 @@ export default function Profile() {
           type="text"
           placeholder="User Name"
           id="username"
-          className="border p-3 rounded-xl"
+          className="border p-3 rounded-xl transform hover:scale-90 transition-transform duration-700"
         />
         <input
           type="email"
           placeholder="Email Address"
           id="email"
-          className="border p-3 rounded-xl"
+          className="border p-3 rounded-xl transform hover:scale-90 transition-transform duration-700"
         />
         <input
           type="password"
           placeholder="Password"
           id="password"
-          className="border p-3 rounded-xl"
+          className="border p-3 rounded-xl transform hover:scale-90 transition-transform duration-700"
         />
 
-        <button className=" bg-black text-white p-3 rounded-xl uppercase hover:opacity-90 disabled:opacity-40">
+        <button className=" bg-black text-white p-3 rounded-xl uppercase hover:opacity-90 disabled:opacity-40 transform hover:scale-90 transition-transform duration-700">
           Update
         </button>
       </form>
 
       <div className="flex justify-between mt-3">
-        <span className="text-red-700 cursor-pointer font-semibold">
+        <span className="text-red-700 cursor-pointer font-semibold transform hover:scale-90 transition-transform duration-500">
           Delete Account
         </span>
-        <span className="text-red-700 cursor-pointer font-semibold">
+        <span className="text-red-700 cursor-pointer font-semibold transform hover:scale-90 transition-transform duration-500">
           Sign Out
         </span>
       </div>

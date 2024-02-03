@@ -61,7 +61,7 @@ export default function SignIn() {
         <input
           type="email"
           placeholder="Email Address"
-          className="border p-3 rounded-lg"
+          className="border p-3 rounded-lg transform hover:scale-90 transition-transform duration-700"
           id="email"
           onChange={handleChange}
         />
@@ -69,14 +69,14 @@ export default function SignIn() {
         <input
           type="password"
           placeholder="Password"
-          className="border p-3 rounded-lg"
+          className="border p-3 rounded-lg transform hover:scale-90 transition-transform duration-700"
           id="password"
           onChange={handleChange}
         />
 
         <button
           disabled={loading}
-          className="bg-black text-white p-3 rounded-xl uppercase hover:opacity-90"
+          className="bg-black text-white p-3 rounded-xl uppercase hover:opacity-90 transform hover:scale-90 transition-transform duration-700 "
         >
           {loading ? "Signing In!" : "Sign In"}
         </button>
