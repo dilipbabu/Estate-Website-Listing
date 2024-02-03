@@ -1,11 +1,14 @@
 import React from "react";
 import { FaSearch } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export default function Header() {
   const location = useLocation();
   const pagesWithSearchBar = ["/"];
   const shouldRenderSearchBar = pagesWithSearchBar.includes(location.pathname);
+
+  const { currentUser } = useSelector((state) => state.user);
 
   return (
     <header className="bg-slate-200 shadow-orange-400">
@@ -35,9 +38,16 @@ export default function Header() {
           <Link to="/about">
             <li className=" text-slate-950 hover:underline">ABOUT</li>
           </Link>
-
-          <Link to="/sign-in">
-            <li className=" text-slate-950 hover:underline"> SIGN IN</li>
+          <Link to="/profile">
+            {currentUser ? (
+              <img
+                className="rounded-full h-12 w-12 object-cover"
+                src={currentUser.avatar}
+                alt="Profile"
+              />
+            ) : (
+              <li className=" text-slate-950 hover:underline"> SIGN IN</li>
+            )}
           </Link>
         </ul>
       </div>
