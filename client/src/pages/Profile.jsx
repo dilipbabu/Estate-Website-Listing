@@ -19,7 +19,7 @@ import {
   signOutUserSuccess,
 } from "../redux/user/userSlice.js";
 import { useDispatch } from "react-redux";
-
+import { Link } from "react-router-dom";
 export default function Profile() {
   const fileRef = useRef(null);
   const { currentUser, loading, error } = useSelector((state) => state.user);
@@ -139,7 +139,9 @@ export default function Profile() {
   };
   return (
     <div className="p-3 max-w-xl mx-auto">
-      <h1 className="text-3xl font-bold text-center my-5">PROFILE</h1>
+      <h1 className="text-3xl font-bold text-center my-5 hover:opacity-90 transform hover:scale-90 transition-transform duration-700">
+        PROFILE
+      </h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
           onChange={(e) => setFile(e.target.files[0])}
@@ -200,9 +202,16 @@ export default function Profile() {
         >
           {loading ? "Loading..." : "Update"}
         </button>
+        <Link
+          className="bg-green-700 text-white p-3 rounded-lg text-center uppercase hover:opacity-95 disabled:opacity-80 
+        transform hover:scale-90 transition-transform duration-700 "
+          to={"/create-listing"}
+        >
+          Create Listing
+        </Link>
       </form>
 
-      <div className="flex justify-between mt-3">
+      <div className="flex justify-between mt-5">
         <span
           onClick={handleDeleteUser}
           className="text-red-700 cursor-pointer font-semibold transform hover:scale-90 transition-transform duration-500"

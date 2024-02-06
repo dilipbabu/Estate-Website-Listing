@@ -11,7 +11,7 @@ export default function Header() {
   const { currentUser } = useSelector((state) => state.user);
 
   return (
-    <header className="bg-slate-100 shadow-red-700">
+    <header className="bg-zinc-300 shadow-red-700">
       <div className="flex justify-between items-center max-w-6xl mx-auto p-3">
         <Link to="/">
           <h1 className="font-bold sm: text-xl flex flex-wrap transform hover:scale-90 transition-transform duration-700">
