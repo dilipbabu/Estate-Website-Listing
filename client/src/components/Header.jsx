@@ -21,7 +21,7 @@ export default function Header() {
         </Link>
 
         {shouldRenderSearchBar && (
-          <form className="bg-slate-100 p-3 rounded-lg flex items-center">
+          <form className="bg-slate-100 p-3 rounded-lg flex items-center transform hover:scale-90 transition-transform duration-700">
             <input
               type="text"
               placeholder="Search Here"
@@ -30,7 +30,7 @@ export default function Header() {
             <FaSearch className="bg-slate-100" />
           </form>
         )}
-        <ul className="flex gap-4">
+        <ul className="flex gap-7">
           <Link to="/">
             <li className=" text-slate-950 hover:underline transform hover:scale-90 transition-transform duration-500">
               HOME
@@ -45,7 +45,7 @@ export default function Header() {
           <Link to="/profile">
             {currentUser ? (
               <img
-                className="rounded-full h-12 w-12 object-cover"
+                className="rounded-full h-9 w-10 object-cover hover: transform hover:scale-90 transition-transform duration-500"
                 src={currentUser.avatar}
                 alt="Profile"
               />

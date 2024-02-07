@@ -28,6 +28,8 @@ export default function Profile() {
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [showListingsError, setshowListingsError] = useState(false);
+  const [userListings, setUserListings] = useState([]);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -137,6 +139,21 @@ export default function Profile() {
       dispatch(signOutUserFailure(data.message));
     }
   };
+
+  const handleShowListings = async () => {
+    try {
+      setshowListingsError(false);
+      const res = await fetch(`/api/user/listings/${currentUser._id}`);
+      const data = await res.json();
+      if (data.success === false) {
+        setshowListingsError(true);
+        return;
+      }
+      setUserListings(data);
+    } catch (error) {
+      setshowListingsError(true);
+    }
+  };
   return (
     <div className="p-3 max-w-xl mx-auto">
       <h1 className="text-3xl font-bold text-center my-5 hover:opacity-90 transform hover:scale-90 transition-transform duration-700">
@@ -216,7 +233,7 @@ export default function Profile() {
           onClick={handleDeleteUser}
           className="text-red-700 cursor-pointer font-semibold transform hover:scale-90 transition-transform duration-500"
         >
-          Delete account
+          Delete Account
         </span>
         <span
           onClick={handleSignOut}
@@ -230,6 +247,50 @@ export default function Profile() {
       <p className="text-green-700 mt-5">
         {updateSuccess ? "User Details updated successfully!" : ""}
       </p>
+      <button
+        onClick={handleShowListings}
+        className="text-green-600 w-full font-semibold transform hover:scale-90 transition-transform duration-700"
+      >
+        Show My Listings
+      </button>
+      <p className="text-red-700 mt-5">
+        {showListingsError ? "Error Showing Listings!" : ""}
+      </p>
+      {userListings && userListings.length > 0 && (
+        <div className="flex flex-col gap-4">
+          <h1 className="text-center mt-5 text-3xl font-bold transform hover:scale-90 transition-transform duration-700">
+            Your Listings:
+          </h1>
+          {userListings.map((listing) => (
+            <div
+              key={listing._id}
+              className="border rounded-xl flex justify-between items-center gap-10"
+            >
+              <Link to={`/listing/${listing._id}`}>
+                <img
+                  src={listing.imageUrls[0]}
+                  alt="Listing Cover-Image"
+                  className="h-30 w-40 object-contain rounded-xl transform hover:scale-90 transition-transform duration-700"
+                />
+              </Link>
+              <Link
+                className="text-black font-semibold transform hover:scale-90 transition-transform duration-700 hover:underline truncate flex-1"
+                to={`/listing/${listing._id}`}
+              >
+                <p>{listing.name}</p>
+              </Link>
+              <div className="flex flex-col items-center gap-2">
+                <button className="text-red-600 uppercase cursor-pointer font-semibold transform hover:scale-90 transition-transform duration-500">
+                  Delete
+                </button>
+                <button className="text-green-600 uppercase cursor-pointer font-semibold transform hover:scale-90 transition-transform duration-500">
+                  Edit
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
