@@ -1,6 +1,136 @@
-import React from "react";
-
+import { useState } from "react";
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
+import { app } from "../firebase";
 export default function CreateListing() {
+  const [files, setFiles] = useState([]);
+  const [formData, setFormData] = useState({
+    imageUrls: [],
+  });
+
+  const [imageUploadError, setImageUploadError] = useState(false);
+
+  const [uploading, setUploading] = useState(false);
+  console.log(formData);
+
+  // const handleImageSubmit = (e) => {
+  //   if (files.length === 0) {
+  //     setImageUploadError("At least 1 image is required per listing!");
+  //     return; // Exit early if no files are selected
+  //   }
+
+  //   if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
+  //     setUploading(true);
+  //     setImageUploadError(false);
+  //     const promises = [];
+
+  //     for (let i = 0; i < files.length; i++) {
+  //       promises.push(storeImage(files[i]));
+  //     }
+  //     Promise.all(promises)
+  //       .then((urls) => {
+  //         setFormData({
+  //           ...formData,
+  //           imageUrls: formData.imageUrls.concat(urls),
+  //         });
+
+  //         setImageUploadError(false);
+  //         setUploading(false);
+  //       })
+  //       .catch((error) => {
+  //         setImageUploadError(
+  //           "Image Upload Failed! (Maximum size per image should not exceed 50 MB!)"
+  //         );
+  //         setUploading(false);
+  //       });
+  //   } else {
+  //     setImageUploadError("Max. 6 images per listing!");
+  //     setUploading(false);
+  //   }
+  // };
+
+  const handleImageSubmit = (e) => {
+    // Reset previous errors
+    setImageUploadError(false);
+
+    const acceptedTypes = ["image/*"];
+
+    // Check if at least one file is selected
+    if (files.length === 0) {
+      setImageUploadError("At least 1 image is required per listing!");
+      return; // Exit early if no files are selected
+    }
+
+    // Check file types
+    for (let i = 0; i < files.length; i++) {
+      if (!acceptedTypes.includes(files[i].type)) {
+        setImageUploadError("Only Images Allowed!");
+        setUploading(false);
+        continue; // Exit early if a non-image file is found
+      }
+    }
+
+    // Perform image upload
+    if (files.length + formData.imageUrls.length < 7) {
+      setUploading(true);
+      const promises = [];
+      for (let i = 0; i < files.length; i++) {
+        promises.push(storeImage(files[i]));
+      }
+      Promise.all(promises)
+        .then((urls) => {
+          setFormData({
+            ...formData,
+            imageUrls: formData.imageUrls.concat(urls),
+          });
+          setUploading(false);
+          setImageUploadError(false);
+        })
+        .catch(() => {
+          //setImageUploadError("Image Upload Failed!");
+          setUploading(false);
+        });
+    } else {
+      setImageUploadError("Max. 6 images per listing!");
+      setUploading(false);
+    }
+  };
+
+  const storeImage = async (file) => {
+    return new Promise((resolve, reject) => {
+      const storage = getStorage(app);
+      const fileName = new Date().getTime() + file.name;
+      const storageRef = ref(storage, fileName);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log(`Upload is ${progress} % done!`);
+        },
+        (error) => {
+          reject(error);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            resolve(downloadURL);
+          });
+        }
+      );
+    });
+  };
+
+  const handleRemoveImage = (index) => {
+    setFormData({
+      ...formData,
+      imageUrls: formData.imageUrls.filter((_, i) => i !== index),
+    });
+  };
   return (
     <main className="p-3 max-w-4xl mx-auto">
       <h1 className="text-3xl font-bold text-center my-5 hover:opacity-90 transform hover:scale-90 transition-transform duration-700">
@@ -134,16 +264,46 @@ export default function CreateListing() {
           </p>
           <div className="flex gap-4">
             <input
+              onChange={(e) => setFiles(e.target.files)}
               className="p-3 rounded-2xl w-full hover:opacity-90 transform hover:scale-90 transition-transform duration-700"
               type="file"
               id="images"
               accept="image/*"
               multiple
             />
-            <button className="p-3 text-green-600 border border-green-600 rounded-2xl uppercase hover: shadow-2xl opacity-90 transform hover:scale-90 transition-transform duration-700 disabled:opacity-45">
-              Upload
+            <button
+              type="button"
+              disabled={uploading}
+              onClick={handleImageSubmit}
+              className="p-3 text-green-600 border border-green-600 rounded-md uppercase hover: shadow-2xl opacity-90 transform hover:scale-90 transition-transform duration-700 disabled:opacity-45"
+            >
+              {uploading ? "Uploading..." : "Upload"}
             </button>
           </div>
+          <p className="text-red-600 font-medium font-sans text-sm">
+            {!uploading && imageUploadError && imageUploadError}
+          </p>
+          {formData.imageUrls.length > 0 &&
+            formData.imageUrls.map((url, index) => (
+              <div
+                key={url}
+                className="flex justify-between p-3 border items-center"
+              >
+                <img
+                  src={url}
+                  alt="Listing Image/Images"
+                  className="w-72 h-56 object-cover rounded-lg"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleRemoveImage(index)}
+                  className="p-3 text-red-600 rounded-lg uppercase transform hover:scale-90 transition-transform duration-700 hover:opacity-70 "
+                >
+                  Delete
+                </button>
+              </div>
+            ))}
+
           <button
             className="bg-black text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80 
           transform hover:scale-90 transition-transform duration-700"
