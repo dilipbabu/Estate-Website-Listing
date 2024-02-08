@@ -15,7 +15,7 @@ export default function () {
   });
   const [loading, setLoading] = useState(false);
   const [listings, setListings] = useState([]);
-  console.log(listings);
+  const [showMore, setShowMore] = useState(false);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -47,10 +47,16 @@ export default function () {
     }
 
     const fetchListings = async () => {
+      setShowMore(false);
       setLoading(true);
       const searchQuery = urlParams.toString();
       const res = await fetch(`/api/listing/get?${searchQuery}`);
       const data = await res.json();
+      if (data.length > 11) {
+        setShowMore(true);
+      } else {
+        setShowMore(false);
+      }
       setListings(data);
       setLoading(false);
     };
@@ -103,6 +109,21 @@ export default function () {
     urlParams.set("order", sidebardata.order);
     const searchQuery = urlParams.toString();
     navigate(`/search?${searchQuery}`);
+  };
+
+  const onShowMoreClick = async () => {
+    const numberOfListings = listings.length;
+    const startIndex = numberOfListings;
+    const urlParams = new URLSearchParams(location.search);
+    urlParams.set("startIndex", startIndex);
+    const searchQuery = urlParams.toString();
+    const res = await fetch(`/api/listing/get?${searchQuery}`);
+    const data = await res.json();
+    if (data.length < 11) {
+      setShowMore(false);
+    }
+
+    setListings([...listings, ...data]);
   };
   return (
     <div className="flex flex-col md:flex-row">
@@ -213,14 +234,21 @@ export default function () {
           {!loading && listings.length === 0 && (
             <p className="text-2xl">No Listing Found!</p>
           )}
-
           {loading && <p className="text-2xl text-center w-full">Loading...</p>}
-
           {!loading &&
             listings &&
             listings.map((listing) => (
               <ListingItem key={listing._id} listing={listing} />
             ))}
+
+          {showMore && (
+            <button
+              onClick={onShowMoreClick}
+              className="hover:underline p-7 w-full text-center"
+            >
+              Show More
+            </button>
+          )}
         </div>
       </div>
     </div>
