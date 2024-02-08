@@ -187,7 +187,7 @@ export default function CreateListing() {
             className="border p-3 rounded-xl transform hover:scale-90 transition-transform duration-700"
             id="name"
             maxLength="100"
-            minLength="15"
+            minLength="10"
             required
             onChange={handleChange}
             value={formData.name}
@@ -356,12 +356,12 @@ export default function CreateListing() {
             formData.imageUrls.map((url, index) => (
               <div
                 key={url}
-                className="flex justify-between p-3 border items-center"
+                className="flex justify-between p-3 border items-center rounded-lg"
               >
                 <img
                   src={url}
                   alt="Listing Image/Images"
-                  className="w-72 h-56 object-cover rounded-lg"
+                  className="w-72 h-56 object-cover rounded-lg  transform hover:scale-90 transition-transform duration-700"
                 />
                 <button
                   type="button"
