@@ -306,9 +306,12 @@ export default function Profile() {
                 >
                   Delete
                 </button>
-                <button className="text-green-600 uppercase cursor-pointer font-semibold transform hover:scale-90 transition-transform duration-500">
-                  Edit
-                </button>
+
+                <Link to={`/update-listing/${listing._id}`}>
+                  <button className="text-green-600 uppercase cursor-pointer font-semibold transform hover:scale-90 transition-transform duration-500">
+                    Edit
+                  </button>
+                </Link>
               </div>
             </div>
           ))}
