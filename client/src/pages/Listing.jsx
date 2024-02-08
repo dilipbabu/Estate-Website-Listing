@@ -14,12 +14,17 @@ import {
   FaShare,
 } from "react-icons/fa";
 
+import { useSelector } from "react-redux";
+import Contact from "../components/Contact";
+
 export default function Listing() {
   SwiperCore.use([Navigation]);
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [copied, setCopied] = useState(false);
+  const { currentUser } = useSelector((state) => state.user);
+  const [contact, setContact] = useState(false);
   const params = useParams();
   useEffect(() => {
     const fetchListing = async () => {
@@ -42,7 +47,6 @@ export default function Listing() {
     };
     fetchListing();
   }, [params.listingId]);
-  console.log(loading);
   return (
     <main>
       {loading && <p className="text-center my-7 text-2xl">Loading...</p>}
@@ -81,24 +85,21 @@ export default function Listing() {
               Link copied!
             </p>
           )}
-          <div className="flex flex-col max-w-4xl mx-auto p-3 my-7 gap-4 ">
+          <div className="flex flex-col max-w-5xl mx-auto p-3 my-7 gap-4 ">
             <p className="text-4xl font-semibold transform hover:scale-90 transition-transform duration-700">
-              {listing.name} - ₹ {+listing.regularPrice}
-              {/* {listing.offer
-                ? listing.discountPrice.toLocaleString("en-US")
-                : listing.regularPrice.toLocaleString("en-US")}
-              {listing.type === "rent" && " / month"} */}
+              {listing.name} - ₹ {listing.regularPrice.toLocaleString("en-US")}
+              {listing.type === "rent" && " / month"}
             </p>
             <p className="flex items-center mt-6 gap-2 text-black font-thin  text-xl transform hover:scale-90 transition-transform duration-700">
               <FaMapMarkerAlt className="text-green-700 text-2xl" />
               {listing.address}
             </p>
             <div className="flex gap-4">
-              <p className="bg-red-900 w-full max-w-[200px] text-white text-center p-1 rounded-xl transform hover:scale-90 transition-transform duration-700">
+              <p className="bg-red-900 w-full max-w-[200px] text-white text-center p-2 rounded-xl transform hover:scale-90 transition-transform duration-700">
                 {listing.type === "rent" ? "For Rent" : "For Sale"}
               </p>
               {listing.offer && (
-                <p className="bg-green-900 w-full max-w-[200px] max-h-[250px] text-white text-center p-1 rounded-xl transform hover:scale-90 transition-transform duration-700">
+                <p className="bg-green-900 w-full max-w-[200px] max-h-[250px] text-white text-center p-2 rounded-xl transform hover:scale-90 transition-transform duration-700">
                   Offer Price: ₹{+listing.discountPrice}
                 </p>
               )}
@@ -131,6 +132,15 @@ export default function Listing() {
                 {listing.furnished ? "Furnished" : "Unfurnished"}
               </li>
             </ul>
+            {currentUser && listing.userRef !== currentUser._id && !contact && (
+              <button
+                onClick={() => setContact(true)}
+                className="bg-black rounded-xl text-white font-semibold p-4 transform hover:scale-90 transition-transform duration-700 hover:opacity-90"
+              >
+                Contact Landlord
+              </button>
+            )}
+            {contact && <Contact listing={listing} />}
           </div>
         </div>
       )}
